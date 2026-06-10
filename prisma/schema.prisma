@@ -1,0 +1,65 @@
+// Prisma 스키마 - AI 옷장 스타일리스트
+// 데이터 모델: ClothingItem, Outfit, OutfitItem, Feedback
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = "file:./dev.db"
+}
+
+// 의류 아이템 모델: 사용자가 등록한 개별 옷 정보
+model ClothingItem {
+  id        String   @id @default(cuid())
+  imageUrl  String?
+  category  String // top, bottom, outer, shoes, accessory
+  color     String // 사전정의 색상 목록 중 하나
+  seasons   String // JSON 배열: ["spring", "summer"]
+  styleTags String // JSON 배열: ["casual", "minimal"]
+  memo      String? // 최대 200자
+  wearCount Int      @default(0)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  outfitItems OutfitItem[]
+}
+
+// 코디 조합 모델: 추천 엔진이 생성한 코디 결과
+model Outfit {
+  id             String   @id @default(cuid())
+  occasion       String
+  weather        String
+  preferredStyle String
+  totalScore     Float
+  explanation    String // 추천 이유 설명
+  createdAt      DateTime @default(now())
+
+  items    OutfitItem[]
+  feedback Feedback?
+}
+
+// 코디 아이템 연결 모델: 코디 조합에 포함된 개별 의류 아이템
+model OutfitItem {
+  id         String @id @default(cuid())
+  outfitId   String
+  clothingId String
+  role       String // top, bottom, outer, shoes, dress
+
+  outfit   Outfit       @relation(fields: [outfitId], references: [id], onDelete: Cascade)
+  clothing ClothingItem @relation(fields: [clothingId], references: [id], onDelete: Cascade)
+
+  @@unique([outfitId, role])
+}
+
+// 피드백 모델: 추천된 코디에 대한 사용자 피드백
+model Feedback {
+  id        String   @id @default(cuid())
+  outfitId  String   @unique
+  type      String // like, dislike
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  outfit Outfit @relation(fields: [outfitId], references: [id], onDelete: Cascade)
+}

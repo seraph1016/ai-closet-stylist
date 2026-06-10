@@ -1,0 +1,125 @@
+@import "tailwindcss";
+
+/* ─── AI 마법의 거울 — 커스텀 테마 ─────────────────────── */
+
+:root {
+  /* 기본 배경 — 크림/아이보리 */
+  --color-cream: #faf8f5;
+  --color-ivory: #f5f0e8;
+
+  /* 포인트 컬러 — 딥 플럼 (자줏빛 보라) */
+  --color-plum: #5b2d6e;
+  --color-plum-light: #7a4791;
+  --color-plum-soft: #f3eaf8;
+
+  /* 세이지 그린 포인트 */
+  --color-sage: #7a9e7e;
+  --color-sage-light: #d4e6d6;
+
+  /* 샴페인 골드 강조색 */
+  --color-gold: #c9a96e;
+  --color-gold-light: #f0e6d0;
+  --color-gold-glow: rgba(201, 169, 110, 0.2);
+
+  /* 텍스트 */
+  --color-text-primary: #2d2b29;
+  --color-text-secondary: #6b6560;
+  --color-text-muted: #9e9790;
+}
+
+/* ─── 애니메이션 키프레임 ──────────────────────────────── */
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes softGlow {
+  0%, 100% {
+    opacity: 0.4;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.7;
+    transform: scale(1.05);
+  }
+}
+
+@keyframes sparkle {
+  0%, 100% {
+    opacity: 0.3;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+
+@keyframes floatIn {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ─── 유틸리티 클래스 ──────────────────────────────────── */
+
+.animate-fade-in-up {
+  animation: fadeInUp 0.6s ease-out both;
+}
+
+.animate-fade-in-up-delay-1 {
+  animation: fadeInUp 0.6s ease-out 0.1s both;
+}
+
+.animate-fade-in-up-delay-2 {
+  animation: fadeInUp 0.6s ease-out 0.2s both;
+}
+
+.animate-fade-in-up-delay-3 {
+  animation: fadeInUp 0.6s ease-out 0.3s both;
+}
+
+.animate-soft-glow {
+  animation: softGlow 4s ease-in-out infinite;
+}
+
+.animate-sparkle {
+  animation: sparkle 2s ease-in-out infinite;
+}
+
+.animate-float-in {
+  animation: floatIn 0.5s ease-out both;
+}
+
+/* ─── 거울 글로우 효과 ─────────────────────────────────── */
+
+.mirror-glow {
+  background: radial-gradient(
+    ellipse at center,
+    var(--color-gold-glow) 0%,
+    transparent 70%
+  );
+}
+
+/* ─── 카드 호버 전환 ──────────────────────────────────── */
+
+.card-hover {
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+
+.card-hover:hover {
+  transform: translateY(-4px);
+  box-shadow:
+    0 12px 28px -8px rgba(91, 45, 110, 0.12),
+    0 4px 12px -4px rgba(0, 0, 0, 0.06);
+}
