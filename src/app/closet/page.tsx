@@ -6,6 +6,8 @@ import { CATEGORIES, SEASONS } from "@/lib/constants";
 import ClothingCard from "@/components/closet/ClothingCard";
 import FilterBar from "@/components/closet/FilterBar";
 
+export const dynamic = 'force-dynamic';
+
 export default async function ClosetPage({
   searchParams,
 }: {

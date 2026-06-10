@@ -1,6 +1,8 @@
 import Link from 'next/link';
 import { getOutfitHistory } from '@/services/feedback.service';
 
+export const dynamic = 'force-dynamic';
+
 /**
  * 저장된 코디 목록 페이지 (/outfits)
  *

@@ -3,6 +3,8 @@ import { getShoppingRecommendations } from '@/services/shopping.service';
 import KeywordCard from '@/components/shopping/KeywordCard';
 import Link from 'next/link';
 
+export const dynamic = 'force-dynamic';
+
 /**
  * 쇼핑 추천 페이지 (/shopping)
  *
