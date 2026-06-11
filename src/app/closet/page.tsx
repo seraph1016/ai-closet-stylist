@@ -13,27 +13,35 @@ export default async function ClosetPage({
 }: {
   searchParams: Promise<{ category?: string; season?: string }>;
 }) {
-  const params = await searchParams;
+  let items: Awaited<ReturnType<typeof getItems>> = [];
+  let totalItemCount = 0;
+  let dbError = false;
 
-  const filter: ClothingFilter = {};
-  if (params.category && CATEGORIES.includes(params.category as Category)) {
-    filter.category = params.category as Category;
+  try {
+    const params = await searchParams;
+
+    const filter: ClothingFilter = {};
+    if (params.category && CATEGORIES.includes(params.category as Category)) {
+      filter.category = params.category as Category;
+    }
+    if (params.season && SEASONS.includes(params.season as Season)) {
+      filter.season = params.season as Season;
+    }
+
+    const hasFilter = Object.keys(filter).length > 0;
+    items = await getItems(hasFilter ? filter : undefined);
+
+    totalItemCount = items.length;
+    if (hasFilter && items.length === 0) {
+      const allItems = await getItems();
+      totalItemCount = allItems.length;
+    }
+  } catch {
+    dbError = true;
   }
-  if (params.season && SEASONS.includes(params.season as Season)) {
-    filter.season = params.season as Season;
-  }
 
-  const hasFilter = Object.keys(filter).length > 0;
-  const items = await getItems(hasFilter ? filter : undefined);
-
-  let totalItemCount = items.length;
-  if (hasFilter && items.length === 0) {
-    const allItems = await getItems();
-    totalItemCount = allItems.length;
-  }
-
-  const isClosetEmpty = items.length === 0 && totalItemCount === 0;
-  const isFilterEmpty = items.length === 0 && totalItemCount > 0;
+  const isClosetEmpty = !dbError && items.length === 0 && totalItemCount === 0;
+  const isFilterEmpty = !dbError && items.length === 0 && totalItemCount > 0;
 
   return (
     <div className="min-h-screen -mt-8 -mx-4 px-4 sm:px-6 lg:px-8 pb-16" style={{ background: "var(--color-cream)" }}>
@@ -75,6 +83,24 @@ export default async function ClosetPage({
       </section>
 
       {/* ─── 필터 + 아이템 수 ─── */}
+      {dbError ? (
+        <section className="max-w-6xl mx-auto animate-fade-in-up-delay-2">
+          <div className="flex flex-col items-center justify-center py-24 text-center">
+            <div className="w-24 h-24 rounded-full flex items-center justify-center mb-6" style={{ background: "var(--color-gold-light)" }}>
+              <span className="text-5xl">🪞</span>
+            </div>
+            <p className="text-lg font-medium mb-2" style={{ color: "var(--color-text-primary)" }}>
+              데모 모드로 실행 중입니다
+            </p>
+            <p className="text-sm mb-4 max-w-md" style={{ color: "var(--color-text-muted)" }}>
+              이 배포 환경에서는 데이터베이스가 초기화되지 않았습니다. 로컬에서 실행하면 모든 기능을 사용할 수 있습니다.
+            </p>
+            <code className="text-xs bg-gray-100 rounded-lg px-4 py-2 text-gray-600">
+              npm install → npx prisma db push → npx prisma db seed → npm run dev
+            </code>
+          </div>
+        </section>
+      ) : (
       <section className="max-w-6xl mx-auto animate-fade-in-up-delay-2">
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-8">
           <div>
@@ -147,6 +173,7 @@ export default async function ClosetPage({
           </div>
         ) : null}
       </section>
+      )}
     </div>
   );
 }

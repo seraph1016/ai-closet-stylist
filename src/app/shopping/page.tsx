@@ -15,7 +15,25 @@ export const dynamic = 'force-dynamic';
  * - 부족 항목 존재: 키워드 카드 목록 표시
  */
 export default async function ShoppingPage() {
-  const items = await getItems();
+  let items: Awaited<ReturnType<typeof getItems>> = [];
+  let dbError = false;
+
+  try {
+    items = await getItems();
+  } catch {
+    dbError = true;
+  }
+
+  if (dbError) {
+    return (
+      <div className="flex flex-col items-center justify-center py-24 text-center">
+        <span className="text-5xl mb-4">🛍️</span>
+        <p className="text-lg font-medium mb-2">데모 모드</p>
+        <p className="text-sm text-gray-500">로컬 환경에서 DB를 설정하면 쇼핑 추천을 받을 수 있습니다.</p>
+      </div>
+    );
+  }
+
   const result = getShoppingRecommendations(items);
 
   return (

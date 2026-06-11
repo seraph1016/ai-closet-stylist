@@ -102,7 +102,24 @@ function getFeedbackBadge(feedback: { type: string } | null): {
 // ─── 메인 페이지 컴포넌트 ────────────────────────────────────────
 
 export default async function OutfitsPage() {
-  const outfits = await getOutfitHistory();
+  let outfits: Awaited<ReturnType<typeof getOutfitHistory>> = [];
+  let dbError = false;
+
+  try {
+    outfits = await getOutfitHistory();
+  } catch {
+    dbError = true;
+  }
+
+  if (dbError) {
+    return (
+      <div className="flex flex-col items-center justify-center py-24 text-center">
+        <span className="text-5xl mb-4">🪞</span>
+        <p className="text-lg font-medium mb-2">데모 모드</p>
+        <p className="text-sm text-gray-500">로컬 환경에서 DB를 설정하면 저장된 코디를 볼 수 있습니다.</p>
+      </div>
+    );
+  }
 
   return (
     <div>

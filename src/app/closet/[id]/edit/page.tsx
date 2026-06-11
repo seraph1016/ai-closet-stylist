@@ -12,13 +12,27 @@ import ClothingForm from '@/components/closet/ClothingForm';
 import { updateClothingAction } from '@/actions/closet';
 import { getItemById } from '@/services/closet.service';
 
+export const dynamic = 'force-dynamic';
+
 export default async function EditClothingPage({
   params,
 }: {
   params: Promise<{ id: string }>;
 }) {
   const { id } = await params;
-  const item = await getItemById(id);
+
+  let item;
+  try {
+    item = await getItemById(id);
+  } catch {
+    return (
+      <div className="flex flex-col items-center justify-center py-24 text-center">
+        <span className="text-5xl mb-4">🪞</span>
+        <p className="text-lg font-medium mb-2">데모 모드</p>
+        <p className="text-sm text-gray-500">로컬 환경에서 DB를 설정하면 수정 기능을 사용할 수 있습니다.</p>
+      </div>
+    );
+  }
 
   // 아이템이 존재하지 않으면 404 반환
   if (!item) {
